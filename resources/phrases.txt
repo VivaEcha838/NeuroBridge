@@ -1,0 +1,11 @@
+Water: I am thirsty.
+Snack: I am hungry.
+Bathroom: I need to use the bathroom.
+Go outside: I want to go outside.
+Feeling sick: I am not feeling well.
+TV time: I want to watch TV.
+Headphones: I need a break from noise.
+Help: I need assistance.
+Sleep: I want to Sleep.
+Cold: I feel cold.
+Hot: I feel hot.

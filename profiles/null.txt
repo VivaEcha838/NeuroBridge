@@ -1,0 +1,5 @@
+username=null
+message=I am thirsty.
+I feel cold.
+I need to use the bathroom.
+

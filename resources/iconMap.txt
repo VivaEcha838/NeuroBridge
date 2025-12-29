@@ -1,0 +1,11 @@
+Water: resources/water.jpg
+Snack: resources/snack.jpg
+Bathroom: resources/bathroom.jpg
+Go outside: resources/outside.jpg
+Feeling sick: resources/feelingsick.jpg
+TV time: resources/tvtime.jpg
+Headphones: resources/headphones.jpg
+Help: resources/help.jpg
+Sleep: resources/sleep.jpg
+Cold: resources/cold.jpg
+Hot: resources/hot.jpg
