@@ -8,6 +8,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 
 
 public class UserScreen {
@@ -22,7 +24,7 @@ public class UserScreen {
     private String preferredLearning;
     private boolean isNonVerbal;
     private String extraNotes;
-    MessageBuilder builder;
+    MessageBuilderNew builder;
     PhraseExtractor extractor;
     BorderPane bp;
     TextArea messageArea;
@@ -39,7 +41,7 @@ public class UserScreen {
         this.preferredLearning = "";
         this.isNonVerbal = false;
         this.extraNotes = "";
-        this.builder = new MessageBuilder();
+        this.builder = new MessageBuilderNew();
         this.extractor = new PhraseExtractor(profile, builder);
         this.bp = new BorderPane(); 
 
@@ -47,6 +49,28 @@ public class UserScreen {
         bp.setCenter(messagePanel.loadTiles());
         VBox displayBox = createDisplayBox(profile);
         bp.setRight(displayBox);
+    }
+
+    private void showMessageHistory(UserProfile profile) {
+            Stage messageHistoryStage = new Stage();
+            messageHistoryStage.setTitle("Message History for " + this.userName);
+            VBox messageHistoryBox = new VBox();
+            if (profile.getMessages().isEmpty()) {
+                messageHistoryBox.getChildren().add(new Text("No message history available."));
+            } else {
+                for (String msg : profile.getMessages()) {
+                    messageHistoryBox.getChildren().add(new Text(msg));
+                }
+            }
+            Scene scene = new Scene(messageHistoryBox, 400, 300);
+            messageHistoryStage.setScene(scene);
+            messageHistoryStage.showAndWait();
+    }
+
+    private void showCaregiverDashboard() {
+            Stage caregiverStage = new Stage();
+            caregiverStage.setTitle("Caregiver Dashboard for " + this.userName);
+            caregiverStage.showAndWait();
     }
 
     public VBox createDisplayBox(UserProfile profile) {
@@ -81,9 +105,33 @@ public class UserScreen {
         Label userNameLabel = new Label("User: " + profile.getName());
         Label ageLabel = new Label("Age: " + profile.getAge());
         Label diagnosisLabel = new Label("Diagnosis: " + profile.getPrimaryDiagnosis());
+        Label sensoryLabel = new Label("Sensory Preferences: " + String.join(", ", profile.getSensoryPref()));
+        Label communicationLabel = new Label("Communication Methods: " + String.join(", ", profile.getCommunicationMethods()));
+        Label calmingLabel = new Label("Calming Strategies: " + String.join(", ", profile.getCalmingStrategies()));
+        Label triggersLabel = new Label("Known Triggers: " + String.join(", ", profile.getKnownTriggers()));
+        Label activitiesLabel = new Label("Favorite Activities: " + String.join(", ", profile.getFavoriteActivities()));
+        Label learningLabel = new Label("Preferred Learning Style: " + profile.getPreferredLearning());
+        Label nonVerbalLabel = new Label("Non-Verbal: " + (profile.getIsNonVerbal() ? "Yes" : "No"));
+        Label notesLabel = new Label("Additional Notes: " + profile.getNotes());
+
+        Button messageHistoryButton = new Button("Message History");
+        messageHistoryButton.setOnAction(e -> 
+            showMessageHistory(profile)
+        );    
+
+        Button caregiverInfoButton = new Button("Caregiver Dashboard");
+        caregiverInfoButton.setOnAction(e -> {
+            showCaregiverDashboard();
+        });
 
         // Button actions can be defined here
-        box.getChildren().addAll(messageArea, showButton, clearButton, saveButton, userNameLabel, ageLabel, diagnosisLabel);
+        box.getChildren().addAll(
+            messageArea, showButton, clearButton, saveButton, 
+            userNameLabel, ageLabel, diagnosisLabel, sensoryLabel, 
+            communicationLabel, calmingLabel, triggersLabel, activitiesLabel, 
+            learningLabel, nonVerbalLabel, notesLabel, messageHistoryButton, caregiverInfoButton
+        );
+
         return box;
 
     }

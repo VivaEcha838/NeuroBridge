@@ -99,6 +99,10 @@ public class UserProfile {
 
     // setter methods
 
+    public void setName(String name) {
+        this.userName = name;
+    }
+
     public void setAge(int age) {
         this.age = age; 
     }

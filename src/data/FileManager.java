@@ -11,8 +11,9 @@ public class FileManager {
 
     // Load user profile from TXT file
     public static UserProfile loadProfile(String username) {
+        //System.out.println(username);
         File file = new File(PROFILE_DIR + username + ".txt");
-
+        //System.out.println(file.getName());
         if (!file.exists()) {
             return null; // profile does not exist
         }
@@ -20,13 +21,12 @@ public class FileManager {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line;
-            String name = null;
             List<String> messages = new ArrayList<>();
-            UserProfile profile = new UserProfile(name);
+            UserProfile profile = new UserProfile(username);
             
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("Name: ")) {
-                    name = line.substring("Name: ".length());
+                    profile.setName(line.substring("Name: ".length()));
                 } else if (line.startsWith("Age: ")) {
                     profile.setAge(Integer.parseInt(line.substring("Age: ".length())));
                 } else if (line.startsWith("Primary Diagnosis: ")) {
@@ -34,24 +34,24 @@ public class FileManager {
                 } else if (line.startsWith("Sensory Preferences: ")) {
                     profile.addSensoryPref(line.substring("Sensory Preferences: ".length()));
                 } else if (line.startsWith("Communication Methods: ")) {
-                    messages.add(line.substring("Communication Methods: ".length()));
+                    profile.addCommunicationMethod(line.substring("Communication Methods: ".length()));
                 } else if (line.startsWith("Known Triggers: ")) {
-                    messages.add(line.substring("Known Triggers: ".length()));
+                    profile.addTrigger(line.substring("Known Triggers: ".length()));
                 } else if (line.startsWith("Calming Strategies: ")) {
-                    messages.add(line.substring("Calming Strategies: ".length()));
+                    profile.addCalmingStrategy(line.substring("Calming Strategies: ".length()));
                 } else if (line.startsWith("Favorite Activities: ")) {
-                    messages.add(line.substring("Favorite Activities: ".length()));
+                    profile.addFavoriteActivity(line.substring("Favorite Activities: ".length()));
                 } else if (line.startsWith("Preferred Learning Style: ")) {
-                    messages.add(line.substring("Preferred Learning Style: ".length()));
+                    profile.setLearningPreference(line.substring("Preferred Learning Style: ".length()));
                 } else if (line.startsWith("Nonverbal: ")) {
-                    messages.add(line.substring("Nonverbal: ".length()));
+                    profile.setNonVerbal(Boolean.parseBoolean(line.substring("Nonverbal: ".length())));
                 } else if (line.startsWith("Notes: ")) {
-                    messages.add(line.substring("Notes: ".length()));
+                    profile.setNotes(line.substring("Notes: ".length()));
                 } else if (line.startsWith("Message: ")) {
                     messages.add(line.substring("Message: ".length()));
                 }    
             }
-
+            //UserProfile profile = new UserProfile(name);
             
             profile.setMessages(messages);
             return profile;
@@ -72,7 +72,7 @@ public class FileManager {
 
         File file = new File(PROFILE_DIR + profile.getName() + ".txt");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
 
             writer.write("Name:" + profile.getName());
             writer.newLine();

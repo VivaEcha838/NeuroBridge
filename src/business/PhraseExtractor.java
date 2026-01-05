@@ -10,11 +10,11 @@ import java.io.*;
 
 public class PhraseExtractor {
     private UserProfile profile;
-    private MessageBuilder builder;
+    private MessageBuilderNew builder;
     private Map<String, String> phraseImageMap;
     private static final String ICON_PATH = "resources/iconMap.txt";
 
-    public PhraseExtractor(UserProfile profile, MessageBuilder builder) {
+    public PhraseExtractor(UserProfile profile, MessageBuilderNew builder) {
         this.profile = profile;
         this.builder = builder;
         this.phraseImageMap = new HashMap<>();

@@ -1,35 +1,11 @@
 Name: Jane
 Age: 13
 Primary Diagnosis: Autism
-
-Sensory Preferences:
-- Low Noise
-- Prefers dim lighting
-- Enjoys deep pressure
-
-Communication Methods:
-- AAC Device
-- Gestures
-- Limited verbal speech
-
-Known Triggers:
-- Sudden loud noises
-- Crowded environments
-- Bright flashing lights
-
-Calming Strategies:
-- Weighted blanket
-- Listening to soft music
-- Gentle rocking
-
-Favorite Activities:
-- Drawing
-- Water play
-- Puzzles
-
+Sensory Preferences: Low Noise; Prefers dim lighting; Enjoys deep pressure
+Communication Methods: AAC Device; Gestures; Limited verbal speech
+Known Triggers: Sudden loud noises; Crowded environments; Bright flashing lights
+Calming Strategies: Weighted blanket; Listening to soft music; Gentle rocking
+Favorite Activities: Drawing; Water play; Puzzles
 Preferred Learning Style: Visual
-
 Nonverbal: true
-
-Notes:
-Jane benefits from visual schedules and responds well to quiet, structured environments. She may need extra time to transition between activities. Avoid unexpected schedule changes without warning.
+Notes: Jane benefits from visual schedules and responds well to quiet, structured environments. She may need extra time to transition between activities. Avoid unexpected schedule changes without warning.

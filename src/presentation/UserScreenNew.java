@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import business.PhraseExtractor;
 
 public class UserScreenNew {
     private String userName;
@@ -86,15 +87,15 @@ public class UserScreenNew {
         Button historyButton = new Button("View Message History");
         historyButton.setPrefWidth(200);
         historyButton.setStyle(" -fx-background-color: #4CAF50; -fx-text-fill: white; ");
-        historyButton.setOnAction(e -> {
+        /*historyButton.setOnAction(e -> {
             MessageHistoryWindow historyViewer = new MessageHistoryWindow(userName);
             historyViewer.show();
-        });
+        });*/
 
         Button saveButton = new Button("Save Profile");
         saveButton.setPrefWidth(200);
         saveButton.setOnAction(e -> {
-            extractor.saveProfiletoDisk();
+            //extractor.saveProfiletoDisk();
             showInfo("Saved", "Profile saved successfully.");
         });
 

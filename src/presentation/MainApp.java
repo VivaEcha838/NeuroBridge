@@ -17,7 +17,9 @@ public class MainApp extends Application {
     public void start(Stage stage) {
         String userName = "Jane";
         UserProfile profile = FileManager.loadProfile(userName);
+        //System.out.println(profile.getName());
         if (profile == null) {
+            System.out.println("true");
             profile = new UserProfile(userName);
         }
         UserScreen userScreen = new UserScreen(profile);

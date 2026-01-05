@@ -22,6 +22,6 @@ public class MessageHistoryWindow {
 
     public MessageHistoryWindow(MessageBuilderNew messageBuilder) {
         this.messageBuilder = messageBuilder;
-        createWindow();
+        //createWindow();
     }
 }
