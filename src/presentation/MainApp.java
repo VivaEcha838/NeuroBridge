@@ -27,6 +27,8 @@ public class MainApp extends Application {
             userScreen.getScreen(), 800, 600
         );
 
+        scene.getStylesheets().add(getClass().getResource("/resources/styles/neuro-theme.css").toExternalForm());
+
         stage.setTitle("NeuroBridge " + profile.getName());
         stage.setScene(scene);
         stage.show();

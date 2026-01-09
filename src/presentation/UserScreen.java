@@ -1,3 +1,15 @@
+/* 
+    Vivaan Echambadi
+    1/6/2026
+
+    UserScreen class represents the user interface for displaying user profile information. UserScreen class
+    will contain methods to create the display box with user details, show message history, and caregiver dashboard.
+    The class will also contain more buttons, such as the Show Message, Clear Message, and Save Message buttons. These
+    buttons will interact with the MessageBuilderNew and PhraseExtractor classes to manage message creation and saving
+
+*/
+
+// importing packages
 package presentation;
 import java.util.*;
 
@@ -13,6 +25,7 @@ import javafx.scene.Scene;
 
 
 public class UserScreen {
+    // creating private properties
     private String userName;
     private int age;
     private String primaryDiagnosis;
@@ -29,6 +42,8 @@ public class UserScreen {
     BorderPane bp;
     TextArea messageArea;
 
+    // constructor that takes in UserProfile object
+    // will intialize all properties and create the user interface
     public UserScreen(UserProfile profile) {
         this.userName = profile.getName();
         this.age = -1;
@@ -45,16 +60,19 @@ public class UserScreen {
         this.extractor = new PhraseExtractor(profile, builder);
         this.bp = new BorderPane(); 
 
+        // creating the message panel and setting it to the center of the border pane
         MessagePanel messagePanel = new MessagePanel(extractor);
         bp.setCenter(messagePanel.loadTiles());
         VBox displayBox = createDisplayBox(profile);
         bp.setRight(displayBox);
     }
 
+    // showMessageHistory() method will take in a UserProfile Object and will display the message history
     private void showMessageHistory(UserProfile profile) {
             Stage messageHistoryStage = new Stage();
             messageHistoryStage.setTitle("Message History for " + this.userName);
             VBox messageHistoryBox = new VBox();
+            //messageHistoryBox.getStyleClass().add("popup");
             if (profile.getMessages().isEmpty()) {
                 messageHistoryBox.getChildren().add(new Text("No message history available."));
             } else {
@@ -63,6 +81,7 @@ public class UserScreen {
                 }
             }
             Scene scene = new Scene(messageHistoryBox, 400, 300);
+            scene.getStylesheets().add(getClass().getResource("/resources/styles/popups.css").toExternalForm());
             messageHistoryStage.setScene(scene);
             messageHistoryStage.showAndWait();
     }
@@ -70,7 +89,11 @@ public class UserScreen {
     private void showCaregiverDashboard() {
             Stage caregiverStage = new Stage();
             caregiverStage.setTitle("Caregiver Dashboard for " + this.userName);
-            caregiverStage.showAndWait();
+            
+            CaregiverDashboard dashboard = new CaregiverDashboard(this.userName, null);
+            Scene scene = dashboard.buildScene();
+            caregiverStage.setScene(scene);
+            caregiverStage.show();
     }
 
     public VBox createDisplayBox(UserProfile profile) {
@@ -78,7 +101,8 @@ public class UserScreen {
         box.setPadding(new Insets(15));
 
         Label nameLabel = new Label("Name: " + profile.getName());
-        nameLabel.setFont(Font.font(18));
+        //nameLabel.setFont(Font.font(18));
+        nameLabel.getStyleClass().add("header-label");
 
         messageArea = new TextArea();
         messageArea.setEditable(false);
@@ -102,7 +126,11 @@ public class UserScreen {
         Button saveButton = new Button("Save Message");
         saveButton.setOnAction(e -> extractor.saveProfileToDisk());
 
-        Label userNameLabel = new Label("User: " + profile.getName());
+        Label abc = new Label("User Name");
+        abc.getStyleClass().add("header-label");
+
+        Label userNameLabel = new Label(profile.getName());
+        userNameLabel.getStyleClass().add("label");
         Label ageLabel = new Label("Age: " + profile.getAge());
         Label diagnosisLabel = new Label("Diagnosis: " + profile.getPrimaryDiagnosis());
         Label sensoryLabel = new Label("Sensory Preferences: " + String.join(", ", profile.getSensoryPref()));
@@ -115,6 +143,7 @@ public class UserScreen {
         Label notesLabel = new Label("Additional Notes: " + profile.getNotes());
 
         Button messageHistoryButton = new Button("Message History");
+        //messageHistoryButton.getStyleClass().add("button");
         messageHistoryButton.setOnAction(e -> 
             showMessageHistory(profile)
         );    

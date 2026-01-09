@@ -1,0 +1,33 @@
+.root {
+    -fx-font-family: "Segoe UI", "Arial";
+    -fx-background-color: #d007eb; /* soft light blue */
+}
+
+.header-label {
+    -fx-text-fill: #02182f;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Titles */
+.label {
+    -fx-text-fill: #9be0aa;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: "#4c0fd1"; /* vibrant purple */
+    -fx-text-fill: "white";
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 20px;
+    
+}
+
+/*.popup {
+    -fx-background-color: #5d11ae;
+    -fx-border-color: #4c0fd1;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+}*/
