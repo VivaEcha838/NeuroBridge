@@ -172,8 +172,6 @@ public class MessageBuilderNew {
         this.userName = userName;
         this.historyFile = HISTORY_FOLDER + userName + "_history.txt";
     }
-
-
 }
 
 

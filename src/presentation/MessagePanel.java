@@ -1,58 +1,78 @@
 package presentation;
-import java.util.*;
 
-import business.*;
+import business.PhraseExtractor;
 import data.PhraseTile;
-
-
-import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
+import java.util.List;
 
 public class MessagePanel {
-
-    GridPane grid;
+    private final PhraseExtractor EXTRACTOR;
+    private final GridPane GRID;
 
     public MessagePanel(PhraseExtractor extractor) {
-        grid = new GridPane();
+        this.EXTRACTOR = extractor;
 
-        grid.setPadding(new Insets(20));
-        grid.setHgap(15);
-        grid.setVgap(15);
-        grid.setAlignment(Pos.CENTER);
-        //MessageBuilder mb = new MessageBuilder();
-        List<PhraseTile> tiles = extractor.loadTiles();
+        GRID = new GridPane();
+        GRID.getStyleClass().add("tile-grid");
+        GRID.setPadding(new Insets(10));
+        GRID.setHgap(14);
+        GRID.setVgap(14);
+        GRID.setAlignment(Pos.TOP_CENTER);
+
+        buildTiles();
+    }
+
+    private void buildTiles() {
+        List<PhraseTile> tiles = EXTRACTOR.loadTiles();
+
         int col = 0;
         int row = 0;
+        int maxCols = 3;
+
         for (PhraseTile tile : tiles) {
             Button button = new Button(tile.getPhrase());
-             button.setPrefSize(160, 90);
+            button.getStyleClass().add("tile-button");
+
+            button.setPrefSize(190, 130);
+            button.setMinSize(190, 130);
+            button.setMaxSize(190, 130);
+            button.setWrapText(true);
 
             if (tile.getIcon() != null) {
-                ImageView imgView = new ImageView(tile.getIcon());
-                imgView.setFitHeight(40);
-                imgView.setPreserveRatio(true);
-                button.setGraphic(imgView);
-                button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                ImageView iconView = new ImageView(tile.getIcon());
+                iconView.setFitHeight(56);
+                iconView.setPreserveRatio(true);
+
+                button.setGraphic(iconView);
+                button.setContentDisplay(ContentDisplay.TOP);
             }
-            
-            grid.add(button, col, row);
+
+            button.setOnAction(e -> EXTRACTOR.handleTileClick(tile));
+
+            GRID.add(button, col, row);
+
             col++;
-            if (col > 2) {
+            if (col >= maxCols) {
                 col = 0;
                 row++;
             }
-
-            button.setOnAction(e -> {
-               extractor.handleTileClick(tile);
-            });
         }
     }
 
-    public GridPane loadTiles() {
-        return grid;
+    public Node loadTiles() {
+        ScrollPane sp = new ScrollPane(GRID);
+        sp.setFitToWidth(true);
+        sp.setPannable(true);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        return sp;
     }
 }

@@ -13,26 +13,35 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
 
     public static Map <String, String> phraseMeaningDictMap = new HashMap<String, String>(); 
+
+    private static String css(String path) {
+        var url = MainApp.class.getResource(path);
+        if (url == null) {
+            throw new IllegalArgumentException("CSS file not found: " + path);
+        }
+        return url.toExternalForm();
+    }
+
     @Override
     public void start(Stage stage) {
-        String userName = "Jane";
-        UserProfile profile = FileManager.loadProfile(userName);
-        //System.out.println(profile.getName());
+        UserProfile profile = FileManager.loadProfileFromTxt("profiles/Jane.txt");
         if (profile == null) {
-            System.out.println("true");
-            profile = new UserProfile(userName);
+            profile = new UserProfile("User");
         }
-        UserScreen userScreen = new UserScreen(profile);
-        Scene scene = new Scene(
-            userScreen.getScreen(), 800, 600
-        );
 
-        scene.getStylesheets().add(getClass().getResource("/resources/styles/neuro-theme.css").toExternalForm());
+        UserScreen screen = new UserScreen(profile);
+
+        Scene scene = new Scene(screen.getScreen(), 1300, 820);
+        scene.getStylesheets().add(css("/resources/styles/neuro-theme.css"));
+        scene.getStylesheets().add(css("/resources/styles/popups.css"));
 
         stage.setTitle("NeuroBridge " + profile.getName());
+        stage.setMinWidth(1100);
+        stage.setMinHeight(720);
         stage.setScene(scene);
         stage.show();
 
+        // Loads phrase dictionary into MainApp.phraseMeaningDictMap
         MessageBuilder.loadPhraseDict();
     }
 

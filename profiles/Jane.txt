@@ -8,17 +8,7 @@ Calming Strategies: Weighted blanket; Listening to soft music; Gentle rocking
 Favorite Activities: Drawing; Water play; Puzzles
 Preferred Learning Style: Visual
 Nonverbal: true
-Notes: Jane benefits from visual schedules and responds well to quiet, structured environments. She may need extra time to transition between activities. Avoid unexpected schedule changes without warning.Name:Jane
-Message: I am thirsty. I need a break from noise. I need assistance.
-Name:Jane
-Message: I am thirsty. I need a break from noise. I need assistance.
-Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
-Name:Jane
-Message: I am thirsty. I need a break from noise. I need assistance.
-Message: I am thirsty. I need a break from noise. I need assistance.
-Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
-Message: I am thirsty. I need a break from noise. I need assistance.
-Name:Jane
+Notes: Jane benefits from visual schedules and responds well to quiet, structured environments. She may need extra time to transition between activities. Avoid unexpected schedule changes without warning.
 Message: I am thirsty. I need a break from noise. I need assistance.
 Message: I am thirsty. I need a break from noise. I need assistance.
 Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
@@ -27,3 +17,11 @@ Message: I am thirsty. I need a break from noise. I need assistance.
 Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
 Message: I am thirsty. I need a break from noise. I need assistance.
 Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
+Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I need a break from noise. I need a break from noise. I need assistance. I need to use the bathroom. I feel hot. I am hungry. I want to watch TV. I feel cold. I want to Sleep.
+Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I need a break from noise. I need assistance.
+Message: I am thirsty. I am not feeling well. I want to watch TV.
