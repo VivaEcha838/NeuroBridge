@@ -19,11 +19,16 @@ import data.UserProfile;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.*;
+
 
 public class UserScreen {
     // creating private properties
@@ -38,6 +43,9 @@ public class UserScreen {
     private String preferredLearning;
     private boolean isNonVerbal;
     private String extraNotes;
+    private MessageGarden garden;
+    private ImageView gardenView;
+    private Label gardenLabel;
 
     // message engine + phrase click handler
     MessageBuilderNew builder;
@@ -63,6 +71,7 @@ public class UserScreen {
         this.preferredLearning = "";
         this.isNonVerbal = false;
         this.extraNotes = "";
+        this.garden = new MessageGarden(userName);
 
         // business logic objects
         this.builder = new MessageBuilderNew();
@@ -99,8 +108,9 @@ public class UserScreen {
         VBox messageCard = buildMessageCard(profile);
         VBox profileCard = buildProfileCard(profile);
         VBox caregiverCard = buildCaregiverToolsCard(profile);
+        VBox gardenCard = buildGarden();
 
-        VBox rightStack = new VBox(14, messageCard, profileCard, caregiverCard);
+        VBox rightStack = new VBox(14, messageCard, profileCard, caregiverCard, gardenCard);
         rightStack.setPadding(new Insets(14));
         rightStack.setFillWidth(true);
 
@@ -124,6 +134,11 @@ public class UserScreen {
             String message = builder.showCurrentMessage();
             messageArea.setText(message);
             extractor.saveMessageToProfile(message);
+
+            if (message != null && !message.isBlank()) {
+                garden.recordMessage();
+                updateGarden();
+            }
         });
 
         Button clearButton = new Button("Clear Message");
@@ -171,7 +186,13 @@ public class UserScreen {
 
         grid.getColumnConstraints().addAll(c1, c2);
 
-        return wrapInCard("Profile", grid);
+        ScrollPane scroll = new ScrollPane(grid);
+        scroll.setFitToWidth(true);
+        scroll.setPannable(true);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        return wrapInCard("Profile", scroll);
     }
 
     // buildCaregiverToolsCard() buttons will open secondary windows
@@ -184,10 +205,100 @@ public class UserScreen {
         caregiverInfoButton.getStyleClass().add("button");
         caregiverInfoButton.setOnAction(e -> showCaregiverDashboard(profile));
 
-        HBox row = new HBox(10, messageHistoryButton, caregiverInfoButton);
+        Button clearHistoryButton = new Button("Clear Message History");
+        clearHistoryButton.getStyleClass().addAll("button", "danger");
+        clearHistoryButton.setOnAction(e -> {
+            handleClearHistory(profile);
+        });
+
+        HBox row = new HBox(10, messageHistoryButton, caregiverInfoButton, clearHistoryButton);
         row.setAlignment(Pos.CENTER_LEFT);
 
         return wrapInCard("Caregiver Tools", row);
+    }
+
+    private VBox buildGarden() {
+        gardenView = new ImageView();
+        gardenView.setFitWidth(120);
+        gardenView.setPreserveRatio(true);
+        gardenView.setFitHeight(120);
+
+        gardenLabel = new Label();
+        gardenLabel.getStyleClass().add("muted");
+        updateGarden();
+
+        VBox gardenBox = new VBox(8, gardenView, gardenLabel);
+        gardenBox.setAlignment(Pos.CENTER);
+
+        return wrapInCard("Message Garden", gardenBox);
+    }
+
+    private void updateGarden() {
+        String path = garden.getImagePath();
+        System.out.println(path);
+        InputStream input = getClass().getResourceAsStream(path);
+
+        if (input == null) {
+            String fileName = path;
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+
+            File file1 = new File("resources/" + fileName);
+            File file2 = new File(fileName);
+
+            try {
+                if (file1.exists()) {
+                    input = new FileInputStream(file1);
+                } else if (file2.exists()) {
+                    input = new FileInputStream(file2);
+                } else {
+                    System.out.println("Garden image not found: " + path);
+                    return;
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("Garden image file not found: " + e.getMessage());
+                return;
+            }
+        }
+
+        Image image = new Image(getClass().getResourceAsStream(garden.getImagePath()));
+        gardenView.setImage(image);
+        gardenLabel.setText("Stage: " + garden.getCurrentStageName() + " | Messages Today: " + garden.getMessagesToday());
+    }
+
+
+    private void handleClearHistory(UserProfile profile) {
+        if (profile == null) {
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Clear History");
+        confirm.setHeaderText("Are you sure you want to clear the message history?");
+        confirm.setContentText("This action cannot be undone.");
+
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType clear = new ButtonType("Clear History", ButtonBar.ButtonData.OK_DONE);
+        confirm.getButtonTypes().setAll(clear, cancel);
+
+        DialogPane pane = confirm.getDialogPane();
+        pane.getStylesheets().add(
+            getClass().getResource("/resources/styles/neuro-theme.css").toExternalForm()
+        );
+        pane.getStylesheets().add(
+            getClass().getResource("/resources/styles/popups.css").toExternalForm()
+        );
+        pane.getStyleClass().addAll("app-root", "popup-root");
+
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isEmpty() || result.get() != clear) {
+            return;
+        }
+
+        profile.getMessages().clear();
+        builder.clearCurrentMessage();
+        extractor.saveProfileToDisk();
     }
 
     // showMessageHistory() method will take in a UserProfile Object and will display the message history

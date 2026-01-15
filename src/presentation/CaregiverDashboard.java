@@ -39,77 +39,64 @@ public class CaregiverDashboard {
         VBox header = new VBox(4, title, sub);
         header.setPadding(new Insets(10, 10, 14, 10));
 
+        String generalText = loadGeneralGuideText();
+        HashMap<String, String> scenarios = loadScenarios();
+
         // Left controls (scenario + generate)
         Label scenarioLabel = new Label("Select Scenario");
         scenarioLabel.getStyleClass().add("muted");
 
         ComboBox<String> scenarioCombo = new ComboBox<>();
         scenarioCombo.getItems().addAll(
-                "Morning Routine",
-                "School / Homework",
-                "Social Situation",
-                "Public Place",
-                "Bedtime Routine"
+            "General Recommendations",
+            "Morning Routine",
+            "After School",
+            "Homework/Focus",
+            "Transitions",
+            "Overload/Meltdown",
+            "Sleep/Wind-Down"
         );
-        scenarioCombo.getSelectionModel().selectFirst();
+        scenarioCombo.setPromptText("Choose a scenario");
+        scenarioCombo.getSelectionModel().clearSelection();
 
-        Button openTab = new Button("Open Situation Tab");
-        openTab.getStyleClass().addAll("button", "primary");
-        openTab.setMaxWidth(Double.MAX_VALUE);
-
-        Button generate = new Button("Generate Recommendations");
-        generate.getStyleClass().addAll("button", "primary");
-        generate.setMaxWidth(Double.MAX_VALUE);
-
-        VBox left = new VBox(10, scenarioLabel, scenarioCombo, generate);
+        VBox left = new VBox(10, scenarioLabel, scenarioCombo);
         left.setAlignment(Pos.TOP_LEFT);
         left.setFillWidth(true);
         VBox leftCard = card("Controls", left);
         leftCard.setMinWidth(280);
 
-        // Right: tabs built from Caregiver Guide.txt
-        TextArea generalArea = new TextArea(loadGeneralGuideText());
-        generalArea.setWrapText(true);
-        generalArea.setEditable(false);
 
-        TabPane tabs = new TabPane();
-        tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        TextArea outputArea = new TextArea("");
+        outputArea.setWrapText(true);
+        outputArea.setEditable(false);
 
-        // General Recommendations tab = everything above SUPPORT RECOMMENDATIONS BY SITUATION
-        Tab generalTab = new Tab("General Recommendations", generalArea);
-        tabs.getTabs().add(generalTab);
+        VBox rightCard = card("Recommendations", outputArea);
 
-        // Situational tabs = each "SITUATION: ..." line under the marker
-        Map<String, Tab> situationTabIndex = new HashMap<>();
-        for (String[] pair : loadSituationalRecs()) {
-            String situationKey = pair[0];     // e.g. "MORNING ROUTINE"
-            String situationText = pair[1];    // e.g. "dim lights, quiet voice, ..."
-
-            TextArea area = new TextArea(situationText);
-            area.setWrapText(true);
-            area.setEditable(false);
-            Tab t = new Tab(toTitleCase(situationKey), area);
-            tabs.getTabs().add(t);
-            situationTabIndex.put(normalizeKey(situationKey), t);
-        }
-
-        VBox rightCard = card("Recommendations", tabs);
-
+        // Split layout
         SplitPane split = new SplitPane(leftCard, rightCard);
         split.setDividerPositions(0.28);
-
         root.setTop(header);
         root.setCenter(split);
 
-        // Button jumps to the matching situation tab (if found), otherwise stays on General
-        openTab.setOnAction(e -> {
+        // On selection, show content
+        scenarioCombo.setOnAction(e -> {
             String selected = scenarioCombo.getValue();
-            Tab t = situationTabIndex.get(normalizeKey(selected));
-            if (t != null) {
-                tabs.getSelectionModel().select(t);
-            } else {
-                tabs.getSelectionModel().select(generalTab);
+            if (selected == null) {
+                outputArea.setText("");
+                return;
             }
+
+            if (selected.equals("General Recommendations")) {
+                outputArea.setText(generalText == null || generalText.isBlank()
+                        ? "Caregiver Guide unavailable."
+                        : generalText);
+                return;
+            }
+
+            String tipLine = scenarios.get(normalizeKey(selected));
+            outputArea.setText(tipLine == null
+                    ? "No recommendations available for this scenario."
+                    : tipLine);
         });
 
         Scene scene = new Scene(root, 1100, 780);
@@ -119,11 +106,10 @@ public class CaregiverDashboard {
     }
 
     private String normalizeKey(String s) {
-        if (s == null) return "";
-            return s.trim().toUpperCase()
-                .replace(" / ", "/")
-                .replace("/", "/")
-                .replace("-", "-");
+        if (s == null) {
+            return "";
+        }
+        return s.trim().toUpperCase().replace(" ", "_");
     }
 
     private String toTitleCase(String s) {
@@ -152,43 +138,133 @@ public class CaregiverDashboard {
         return box;
     }
 
-    private String buildRecommendationText(String scenario) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Situation: ").append(scenario).append("\n\n");
-
-        var recs = RECOMMENDER.getScenarioTips(scenario);
-        if (recs != null && !recs.isEmpty()) {
-            sb.append("Recommendations:\n");
-            for (int i = 0; i < recs.size(); i++) {
-                sb.append(i + 1).append(". ").append(recs.get(i)).append("\n");
-            }
-        } else {
-            sb.append("No recommendations available for this scenario.\n");
-        }
-
-        var tips = RECOMMENDER.getScenarioTips(scenario);
-        if (tips != null && !tips.isEmpty()) {
-            sb.append("\nQuick Tips:\n");
-            for (int i = 0; i < tips.size(); i++) {
-                sb.append("- ").append(tips.get(i)).append("\n");
-            }
-        }
-
-        return sb.toString();
-    }
-
     private String readGuideFile() {
         try (InputStream is = getClass().getResourceAsStream("/resources/Caregiver Guide.txt")) {
-            if (is == null) {
+            if (is != null) {
                 return new String(is.readAllBytes(), StandardCharsets.UTF_8);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.out.println("Failed to read caregiver guide resource: " + e.getMessage());
+        }
+
         try (InputStream is = new FileInputStream("resources/Caregiver Guide.txt")) {
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             System.out.println("Failed to read caregiver guide file: " + e.getMessage());
             return "";
         }
+    }
+
+    private HashMap<String, String> loadScenarios() {
+        String full = readGuideFile();
+        HashMap<String, String> map = new HashMap<>();
+        if (full == null || full.isBlank()) {
+            return map;
+        }
+
+        String marker = "SUPPORT RECOMMENDATIONS BY SITUATION";
+        int index = full.indexOf(marker);
+        if (index < 0) {
+            return map;
+        }
+
+        String afterMarker = full.substring(index + marker.length()).trim();
+        if (afterMarker.isBlank()) {
+            return map;
+        }
+
+        String[] lines = afterMarker.split("\\R");
+        for (String raw : lines) {
+            if (raw == null) {
+                continue;
+            }
+            String line = raw.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            int colon = line.indexOf(':');
+            if (colon < 0) {
+                continue;
+            }
+
+            String fileKey = line.substring(0, colon).trim(); 
+            String value = line.substring(colon + 1).trim();       
+
+            if (!fileKey.isEmpty() && !value.isEmpty()) {
+                map.put(normalizeKey(fileKey), value);            
+            }
+        }
+        
+        return map;
+    }
+
+    private String toDisplayName(String s) {
+        if (s == null) {
+            return "";
+        }
+        s = s.trim();
+        if (s.isEmpty()) {
+            return "";
+        }
+
+        s = s.replace("_", " ");
+        List<String> tokens = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+           if (Character.isLetterOrDigit(c)) {
+                currentToken.append(c);
+           } else if (c == '/' || c == '-') {
+                if (currentToken.length() > 0) {
+                    tokens.add(currentToken.toString());
+                    currentToken.setLength(0);
+                }
+                tokens.add(String.valueOf(c));
+            } 
+            if (c == '/' || c == '-') {
+                tokens.add(String.valueOf(c));
+            }
+            else {
+                tokens.add(" ");
+            }
+        }
+
+        if (currentToken.length() > 0) {
+            tokens.add(currentToken.toString());
+        }
+
+        StringBuilder result = new StringBuilder();
+        boolean lastWasSpace = false;
+        for (String token : tokens) {
+            if (token.equals(" ")) {
+                if (!lastWasSpace && result.length() > 0) {
+                    result.append(" ");
+                    lastWasSpace = true;
+                }
+                continue;
+            }
+
+            if (token.equals("/") || token.equals("-")) {
+                int n = result.length();
+                if (n > 0 && result.charAt(n - 1) == ' ') {
+                    result.deleteCharAt(n - 1);
+                }
+                result.append(token);
+                lastWasSpace = false;
+                continue;
+            }
+
+            String word = token.toLowerCase();
+            result.append(Character.toUpperCase(word.charAt(0)));
+            if (word.length() > 1) {
+                result.append(word.substring(1));
+            }
+            lastWasSpace = false;
+        }
+
+        return result.toString();
     }
 
     private String loadGeneralGuideText() {
@@ -205,41 +281,5 @@ public class CaregiverDashboard {
         }
 
         return full.substring(0, idx).trim();
-    }
-
-    private List<String[]> loadSituationalRecs() {
-        String full = readGuideFile();
-        List<String[]> recs = new ArrayList<>();
-        if (full.isBlank()) {
-            return recs;
-        }
-
-        String marker = "SUPPORT RECOMMENDATIONS BY SITUATION";
-        int idx = full.indexOf(marker);
-
-        if (idx < 0) {
-            return recs;
-        }
-
-        String situationalPart = full.substring(idx + marker.length()).trim();
-        if (situationalPart.isBlank()) {
-            return recs;
-        }
-
-        String[] sections = situationalPart.split("===");
-        for (String sec : sections) {
-            String[] lines = sec.trim().split("\n");
-            if (lines.length >= 2) {
-                String scenario = lines[0].trim();
-                for (int i = 1; i < lines.length; i++) {
-                    String tip = lines[i].trim();
-                    if (!tip.isEmpty()) {
-                        recs.add(new String[]{scenario, tip});
-                    }
-                }
-            }
-        }
-
-        return recs;
     }
 }
