@@ -1,37 +1,32 @@
 package business;
 
 import java.util.*;
-    import java.io.*;
-    import java.time.LocalDateTime;
-    import java.time.format.DateTimeFormatter;
-    import presentation.MainApp;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import presentation.MainApp;
 
 public class MessageBuilderNew {
     private String currentMessage;
     private List<String> selectedPhrases;
     private String userName;
-    private String historyFile;
+    private MessageHistoryManager historyManager;
 
     private static final String PHRASES_FILE = "resources/phrases.txt";
-    private static final String HISTORY_FOLDER = "history/";
 
     public MessageBuilderNew() {
         this.currentMessage = "";
         this.selectedPhrases = new ArrayList<>();
         this.userName = "defaultUser";
-        this.historyFile = HISTORY_FOLDER + userName + "_history.txt";
+        this.historyManager = new MessageHistoryManager(userName);
     }
 
     public MessageBuilderNew(String userName) {
         this.userName = userName;
         this.currentMessage = "";
         this.selectedPhrases = new ArrayList<>();
-        this.historyFile = HISTORY_FOLDER + userName + "_history.txt";
-
-        File folder = new File(HISTORY_FOLDER);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
+        this.historyManager = new MessageHistoryManager(userName);
     }
 
     public void addButtonPhrase(String phrase) {
@@ -64,9 +59,8 @@ public class MessageBuilderNew {
         }
         
         if (!currentMessage.trim().isEmpty()) {
-            saveMessageToHistory(currentMessage.trim());
+            historyManager.saveMessage(currentMessage.trim());
         }
-
         this.selectedPhrases.clear();
         return currentMessage.trim();
     }
@@ -107,42 +101,26 @@ public class MessageBuilderNew {
         return this.selectedPhrases.size();
     }
 
-    private void saveMessageToHistory(String message) {
-        if (userName == null || userName.isEmpty()) {
-            return;
-        }
-
-        try (FileWriter fw = new FileWriter(historyFile, true)) {
-            DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            fw.write(dateTime.format(now) + " - " + message + System.lineSeparator());
-        } catch (IOException e) {
-            System.out.println("Error saving message to history: " + e.getMessage());
-        }
-    }
-
     public List<String> getMessageHistory() {
         List<String> history = new ArrayList<>();
-        if (userName == null || userName.isEmpty()) {
-            return history;
+        List<HistoryEntry> entries = historyManager.loadHistory();
+
+        for (int i = 0; i < entries.size(); i++) {
+            history.add(entries.get(i).toString());
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(historyFile))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                history.add(line);
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading message history: " + e.getMessage());
-        }
         return history;
     }
 
+    public List<String> getMessagesOnly() {
+        return historyManager.loadMessages();
+    }
+
     public List<String> getMessageHistoryByDate(String date) {
-        List<String> allHistory = getMessageHistory();
+        List<String> history = getMessageHistory();
         List<String> filteredHistory = new ArrayList<>();
 
-        for (String line: allHistory) {
+        for (String line: history) {
             if (line.startsWith(date)) {
                 filteredHistory.add(line);
             }
@@ -152,16 +130,21 @@ public class MessageBuilderNew {
     }
 
     public List<String> getRecentMessages(int count) {
-        List<String> allHistory = getMessageHistory();
-        int start = Math.max(0, allHistory.size() - count);
-        return allHistory.subList(start, allHistory.size());
+        List<String> history = getMessageHistory();
+        int start = Math.max(0, history.size() - count);
+        return history.subList(start, history.size());
+    }
+
+    public List<String> getRecentMessagesByHour(int hours) {
+        return historyManager.getRecentMessages(hours);
     }
 
     public void clearMessageHistory() {
-        File file = new File(historyFile);
-        if (file.exists()) {
-            file.delete();
-        }
+        historyManager.clearHistory();
+    }
+
+    public int getHistoryCount() {
+        return historyManager.getMessageCount();
     }
 
     public String getUserName() {
@@ -170,7 +153,11 @@ public class MessageBuilderNew {
 
     public void setUserName(String userName) {
         this.userName = userName;
-        this.historyFile = HISTORY_FOLDER + userName + "_history.txt";
+        this.historyManager = new MessageHistoryManager(userName);
+    }
+
+    public MessageHistoryManager getHistoryManager() {
+        return historyManager;
     }
 }
 

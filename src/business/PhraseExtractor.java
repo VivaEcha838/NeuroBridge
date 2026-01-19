@@ -80,6 +80,14 @@ public class PhraseExtractor {
         handleTileSelection(tile);
     }
 
+    public String getUserName() {
+        if (profile != null && profile.getName() != null) {
+            return profile.getName();
+        }
+
+        return "Unknown";
+    }
+
     // Helper Methods
 
     private static String extractPhrase(String line) {

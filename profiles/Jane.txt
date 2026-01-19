@@ -9,7 +9,8 @@ Favorite Activities: Drawing; Water play; Puzzles
 Preferred Learning Style: Visual
 Nonverbal: true
 Notes: Jane benefits from visual schedules and responds well to quiet, structured environments. She may need extra time to transition between activities. Avoid unexpected schedule changes without warning.
-Message: I am thirsty. I am hungry. I need to use the bathroom.
-Message: I want to watch TV. I want to go outside. I am not feeling well.
-Message: I want to watch TV.
-Message: I want to Sleep.
+Message: I want to watch TV. I want to watch TV. I want to watch TV. I want to watch TV. I want to watch TV. I want to watch TV. I want to watch TV.
+Message: I need to use the bathroom.
+Message: I feel hot.
+Message: I need a break from noise.
+Message: I need a break from noise. I need a break from noise. I need a break from noise.
