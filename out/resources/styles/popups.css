@@ -1,12 +1,61 @@
-/* Popup-specific tweaks. Still uses the same calm system. */
+/* 
+    Vivaan Echambadi
+    1/22/2026
 
+    popups.css file provides styling specific to popup windows and modal dialogs in the NeuroBridge application.
+    This stylesheet builds on the neuro-theme.css base styles and adds additional customization for popup-specific
+    elements such as dialog boxes, confirmation alerts, and modal windows. The styles maintain the same calm,
+    low-stimulation design philosophy while ensuring popups are visually distinct from the main application window.
+
+*/
+
+/* Popup root container - base styling for all popup windows and modal dialogs */
 .popup-root {
     -fx-background-color: #1f2933;
     -fx-padding: 16;
 }
 
+/* Popup title styling - bold, prominent header text for popup windows */
 .popup-title {
     -fx-text-fill: #e6edf3;
     -fx-font-size: 16px;
     -fx-font-weight: 800;
+}
+
+/* Dialog pane styling - ensures confirmation dialogs and alerts have proper text color */
+.dialog-pane {
+    -fx-background-color: #1f2933;
+}
+
+/* Dialog pane content area - main text area of dialogs */
+.dialog-pane > .content {
+    -fx-background-color: #1f2933;
+    -fx-padding: 16;
+}
+
+/* Dialog pane header text - title/header of dialogs */
+.dialog-pane > .header-panel {
+    -fx-background-color: #24313b;
+}
+
+/* Dialog pane header text styling - ensures header text is visible */
+.dialog-pane > .header-panel > .label {
+    -fx-text-fill: #e6edf3;
+    -fx-font-weight: 700;
+}
+
+/* Dialog pane content text - main message text in dialogs */
+.dialog-pane > .content > .label {
+    -fx-text-fill: #e6edf3;
+}
+
+/* Dialog pane button bar - container for dialog buttons */
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: #1f2933;
+}
+
+/* Dialog pane buttons - styling for buttons in dialogs */
+.dialog-pane .button {
+    -fx-background-color: #3a4a58;
+    -fx-text-fill: #e6edf3;
 }

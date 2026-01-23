@@ -1,163 +1,109 @@
+/* 
+    Vivaan Echambadi
+    1/22/2026
+
+    MessageBuilderNew() class will represent a message builder that constructs messages from selected phrases. 
+    It will provide methods to add phrases, show the current message, clear the message, and update the message 
+    based on selected phrases. It will also manage the username associated with the message.
+    Moreover, it will utilize a phrase-meaning dictionary to convert phrases into their meanings when constructing the message.
+
+*/
+
+// importing package
 package business;
 
 import java.util.*;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import presentation.MainApp;
 
+// MessageBuilderNew class definition
 public class MessageBuilderNew {
+    // private attributes for current message, selected phrases, and username
     private String currentMessage;
     private List<String> selectedPhrases;
     private String userName;
-    private MessageHistoryManager historyManager;
 
+    // constant for phrases file path
     private static final String PHRASES_FILE = "resources/phrases.txt";
 
+    // constructor to initialize message builder
     public MessageBuilderNew() {
+        // initializing attributes
         this.currentMessage = "";
         this.selectedPhrases = new ArrayList<>();
         this.userName = "defaultUser";
-        this.historyManager = new MessageHistoryManager(userName);
     }
 
+    // overloaded constructor to initialize message builder with a username
     public MessageBuilderNew(String userName) {
+        // initializing attributes
         this.userName = userName;
         this.currentMessage = "";
         this.selectedPhrases = new ArrayList<>();
-        this.historyManager = new MessageHistoryManager(userName);
     }
 
+    // addButtonPhrase() method to add a phrase to the selected phrases list
     public void addButtonPhrase(String phrase) {
         this.selectedPhrases.add(phrase);
+        // updating the current message after adding a phrase
         updateCurrentMessage();
     }
 
-    public static void loadPhrases() {
-        try (BufferedReader br = new BufferedReader(new FileReader(PHRASES_FILE))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2) {
-                    MainApp.phraseMeaningDictMap.put(parts[0].trim(), parts[1].trim());
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error loading phrases: " + e.getMessage());
-        }
-    }
-
+    // showCurrentMessage() method to display the current message constructed from selected phrases
     public String showCurrentMessage() {
+        // constructing the current message from selected phrases
         currentMessage = "";
+        // iterating through selected phrases to build the message
         for (int i = 0; i < this.selectedPhrases.size(); i++) {
+            // checking if the phrase exists in the phrase-meaning dictionary
             if (MainApp.phraseMeaningDictMap.containsKey(this.selectedPhrases.get(i))) {
+                // appending the meaning of the phrase to the current message
                 currentMessage += MainApp.phraseMeaningDictMap.get(this.selectedPhrases.get(i)) + " ";
             } else {
+                // if phrase not found in dictionary, append the phrase itself
                 currentMessage += this.selectedPhrases.get(i) + " ";
             }
         }
         
-        if (!currentMessage.trim().isEmpty()) {
-            historyManager.saveMessage(currentMessage.trim());
-        }
+        // clearing selected phrases after showing the message
         this.selectedPhrases.clear();
         return currentMessage.trim();
     }
 
+    // clearCurrentMessage() method to clear the current message and selected phrases
     public void clearCurrentMessage() {
+        // resetting current message and clearing selected phrasesq
         this.currentMessage = "";
         this.selectedPhrases.clear();
     }
 
-    public void removeLastPhrase() {
-        if (!this.selectedPhrases.isEmpty()) {
-            this.selectedPhrases.remove(this.selectedPhrases.size() - 1);
-            updateCurrentMessage();
-        }
-    }
-
+    // updateCurrentMessage() method to update the current message based on selected phrases
     public String updateCurrentMessage() {
+        // message builder to construct the current message
         StringBuilder messageBuilder = new StringBuilder();
 
+        // iterating through selected phrases to build the message
         for (int i = 0; i < this.selectedPhrases.size(); i++) {
+            // checking if the phrase exists in the phrase-meaning dictionary
             if (MainApp.phraseMeaningDictMap.containsKey(this.selectedPhrases.get(i))) {
+                // appending the meaning of the phrase to the message builder
                 messageBuilder.append(MainApp.phraseMeaningDictMap.get(this.selectedPhrases.get(i))).append(" ");
 
+                // adding space between phrases
                 if (i < this.selectedPhrases.size() - 1) {
+                    // append space if not the last phrase
                     messageBuilder.append(" ");
                 }
             }
         }
+        // setting the current message from the message builder
         this.currentMessage = messageBuilder.toString().trim();
         return this.currentMessage;
     }
 
-    public List<String> getSelectedPhrases() {
-        return new ArrayList<>(this.selectedPhrases);
-    }
-
-    public int getSelectedPhrasesCount() {
-        return this.selectedPhrases.size();
-    }
-
-    public List<String> getMessageHistory() {
-        List<String> history = new ArrayList<>();
-        List<HistoryEntry> entries = historyManager.loadHistory();
-
-        for (int i = 0; i < entries.size(); i++) {
-            history.add(entries.get(i).toString());
-        }
-
-        return history;
-    }
-
-    public List<String> getMessagesOnly() {
-        return historyManager.loadMessages();
-    }
-
-    public List<String> getMessageHistoryByDate(String date) {
-        List<String> history = getMessageHistory();
-        List<String> filteredHistory = new ArrayList<>();
-
-        for (String line: history) {
-            if (line.startsWith(date)) {
-                filteredHistory.add(line);
-            }
-        }
-
-        return filteredHistory;
-    }
-
-    public List<String> getRecentMessages(int count) {
-        List<String> history = getMessageHistory();
-        int start = Math.max(0, history.size() - count);
-        return history.subList(start, history.size());
-    }
-
-    public List<String> getRecentMessagesByHour(int hours) {
-        return historyManager.getRecentMessages(hours);
-    }
-
-    public void clearMessageHistory() {
-        historyManager.clearHistory();
-    }
-
-    public int getHistoryCount() {
-        return historyManager.getMessageCount();
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
+    // setUserName() method to get the username associated with the message
     public void setUserName(String userName) {
         this.userName = userName;
-        this.historyManager = new MessageHistoryManager(userName);
-    }
-
-    public MessageHistoryManager getHistoryManager() {
-        return historyManager;
     }
 }
 

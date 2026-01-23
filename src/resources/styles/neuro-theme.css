@@ -1,16 +1,26 @@
-/* Calm, consistent, low-stimulation theme for JavaFX */
+/* 
+    Vivaan Echambadi
+    1/22/2026
 
+    neuro-theme.css file provides a calm, consistent, low-stimulation theme for the NeuroBridge JavaFX application.
+    It defines styles for various UI components including buttons, cards, text areas, and other interface elements.
+    The color scheme uses muted slate tones to create a visually comfortable environment for users with sensory sensitivities.
+    This stylesheet is designed to minimize visual overstimulation while maintaining clear hierarchy and readability.
+
+*/
+
+/* Root font settings - establishing base typography for the entire application */
 .root {
     -fx-font-family: "Segoe UI", "Inter", "Arial";
     -fx-font-size: 14px;
 }
 
-/* App background */
+/* App background - main application background color using calm slate tone */
 .app-root {
     -fx-background-color: #1f2933; /* calm slate */
 }
 
-/* Top header */
+/* Top header section - styling for the application header bar */
 .app-header {
     -fx-background-color: #24313b;
     -fx-padding: 14 18 14 18;
@@ -18,18 +28,20 @@
     -fx-border-width: 0 0 1 0;
 }
 
+/* App title styling - large, bold text for the main application title */
 .app-title {
     -fx-text-fill: #e6edf3;
     -fx-font-size: 20px;
     -fx-font-weight: 700;
 }
 
+/* App subtitle styling - secondary header text with lighter color */
 .app-subtitle {
     -fx-text-fill: #b8c4cc;
     -fx-font-size: 13px;
 }
 
-/* Card containers */
+/* Card containers - reusable card-style containers for grouping related content */
 .card {
     -fx-background-color: #2b3944;
     -fx-background-radius: 14;
@@ -39,23 +51,24 @@
     -fx-padding: 14;
 }
 
+/* Card title styling - bold headers for card sections */
 .card-title {
     -fx-text-fill: #e6edf3;
     -fx-font-size: 15px;
     -fx-font-weight: 700;
 }
 
-/* Primary content text */
+/* Primary content text - default label styling for readable text */
 .label {
     -fx-text-fill: #e6edf3;
 }
 
-/* Muted labels (for keys) */
+/* Muted labels - used for keys, secondary information, and less prominent text */
 .muted {
     -fx-text-fill: #b8c4cc;
 }
 
-/* Buttons */
+/* Button styling - default button appearance with secondary color scheme */
 .button {
     -fx-background-color: #3a4a58; /* secondary */
     -fx-text-fill: #e6edf3;
@@ -66,10 +79,12 @@
     -fx-border-color: transparent;
 }
 
+/* Button hover state - slightly lighter background on mouse hover */
 .button:hover {
     -fx-background-color: #425463;
 }
 
+/* Button focus state - gentle blue border when button receives keyboard focus */
 .button:focused {
     -fx-border-color: #7fb3d5; /* gentle focus */
     -fx-border-width: 2;
@@ -77,23 +92,27 @@
     -fx-border-radius: 12;
 }
 
+/* Primary button variant - used for main action buttons with blue color scheme */
 .button.primary {
     -fx-background-color: #4c7ea8;
 }
 
+/* Primary button hover state - brighter blue on hover */
 .button.primary:hover {
     -fx-background-color: #568bb8;
 }
 
+/* Danger button variant - used for destructive actions like "Clear" with red tones */
 .button.danger {
     -fx-background-color: #7a3d46;
 }
 
+/* Danger button hover state - slightly lighter red on hover */
 .button.danger:hover {
     -fx-background-color: #8a4650;
 }
 
-/* TextArea and ScrollPane */
+/* TextArea styling - multi-line text input/display areas with dark background */
 .text-area {
     -fx-control-inner-background: #1f2933;
     -fx-text-fill: #e6edf3;
@@ -106,27 +125,31 @@
     -fx-border-width: 1;
 }
 
+/* TextArea content styling - inner content area background */
 .text-area .content {
     -fx-background-color: #1f2933;
     -fx-background-radius: 12;
 }
 
+/* ScrollPane styling - scrollable container with transparent background */
 .scroll-pane {
     -fx-background: #1f2933;
     -fx-background-color: transparent;
 }
 
+/* ScrollPane viewport styling - content area within scroll pane */
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
 
-/* Tile buttons */
+/* Tile grid layout - spacing and gap settings for phrase tile grid */
 .tile-grid {
     -fx-padding: 10;
     -fx-hgap: 14;
     -fx-vgap: 14;
 }
 
+/* Tile button styling - large interactive buttons for phrase tiles with icons and text */
 .tile-button {
     -fx-background-color: #2f3b46;
     -fx-text-fill: #e6edf3;
@@ -142,10 +165,19 @@
     -fx-border-width: 1;
 }
 
+/* Tile button image view - ensures all images within tiles are consistently sized */
+.tile-button .image-view {
+    -fx-fit-width: 82;
+    -fx-fit-height: 82;
+    -fx-preserve-ratio: true;
+}
+
+/* Tile button hover state - darker background when hovering over phrase tiles */
 .tile-button:hover {
     -fx-background-color: #364654;
 }
 
+/* Tile button focus state - blue border when tile receives keyboard focus */
 .tile-button:focused {
     -fx-border-color: #7fb3d5;
     -fx-border-width: 2;
@@ -153,7 +185,7 @@
     -fx-border-radius: 18;
 }
 
-/* ComboBox */
+/* ComboBox styling - dropdown selection boxes with consistent theming */
 .combo-box {
     -fx-background-color: #2f3b46;
     -fx-background-radius: 12;
@@ -162,16 +194,42 @@
     -fx-text-fill: #e6edf3;
 }
 
+/* ComboBox list cell styling - individual items in dropdown list */
 .combo-box .list-cell {
     -fx-text-fill: #e6edf3;
     -fx-background-color: transparent;
 }
 
-/* Tabs */
+/* ComboBox popup styling - dropdown list container background */
+.combo-box-popup .list-view {
+    -fx-background-color: #2f3b46;
+    -fx-border-color: #364654;
+    -fx-border-width: 1;
+}
+
+/* ComboBox popup list cell styling - ensures text is visible in dropdown */
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #2f3b46;
+    -fx-text-fill: #e6edf3;
+}
+
+/* ComboBox popup list cell hover state - highlights item on mouse hover */
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #3a4a58;
+}
+
+/* ComboBox popup list cell selected state - shows currently selected item */
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: #4c7ea8;
+    -fx-text-fill: #ffffff;
+}
+
+/* Tab pane header background - container for tab headers */
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: #24313b;
 }
 
+/* Tab styling - individual tab buttons with rounded top corners */
 .tab-pane .tab {
     -fx-background-color: #2f3b46;
     -fx-background-radius: 10 10 0 0;
@@ -180,16 +238,18 @@
     -fx-padding: 8 12 8 12;
 }
 
+/* Tab label styling - text within tab buttons */
 .tab-pane .tab .tab-label {
     -fx-text-fill: #e6edf3;
     -fx-font-weight: 700;
 }
 
+/* Selected tab styling - active tab with slightly different background */
 .tab-pane .tab:selected {
     -fx-background-color: #2b3944;
 }
 
-/* SplitPane divider */
+/* SplitPane divider styling - vertical divider between split sections */
 .split-pane:horizontal > .split-pane-divider {
     -fx-background-color: #364654;
     -fx-padding: 0 1 0 1;
